@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://10.10.10.12:3306/user_center?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&useSSL=false&&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+    username: root
+    password: Admin789.
+  aop:
+    proxy-target-class: false
