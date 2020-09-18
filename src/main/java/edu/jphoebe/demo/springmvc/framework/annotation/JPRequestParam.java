@@ -6,7 +6,7 @@ import java.lang.annotation.*;
  * JPRequestParam class
  *
  * @author 蒋时华
- * @date 2019/12/14
+ * @date 2017/12/14
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)

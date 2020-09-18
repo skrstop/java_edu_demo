@@ -1,8 +1,8 @@
 package edu.jphoebe.demo.springmvc.framework.context;
 
-import com.edu.spring.spring.framework.annotation.JPAutowired;
-import com.edu.spring.spring.framework.annotation.JPController;
-import com.edu.spring.spring.framework.annotation.JPService;
+import edu.jphoebe.demo.springmvc.framework.annotation.JPAutowired;
+import edu.jphoebe.demo.springmvc.framework.annotation.JPController;
+import edu.jphoebe.demo.springmvc.framework.annotation.JPService;
 import lombok.Getter;
 
 import java.io.File;
@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * JPApplicationContext class
  *
  * @author 蒋时华
- * @date 2019/12/14
+ * @date 2017/12/14
  */
 public class JPApplicationContext {
 
