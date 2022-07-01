@@ -8,17 +8,17 @@ import edu.jphoebe.demo.netty.catalina.http.JPServlet;
 public class FirstServlet extends JPServlet {
 
 
-	@Override
-	public void doGet(JPRequest request, JPResponse response) {
-		doPost(request, response);
-	}
+    @Override
+    public void doGet(JPRequest request, JPResponse response) {
+        doPost(request, response);
+    }
 
 
-	@Override
-	public void doPost(JPRequest request, JPResponse response) {
-		String param = "name";
-		String str = request.getParameter(param);
-		response.write(param + ":" + str, 200);
-	}
+    @Override
+    public void doPost(JPRequest request, JPResponse response) {
+        String param = "name";
+        String str = request.getParameter(param);
+        response.write(param + ":" + str, 200);
+    }
 
 }

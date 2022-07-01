@@ -9,42 +9,42 @@ import java.util.Map;
 
 public class JPRequest {
 
-	private ChannelHandlerContext ctx;
-	private HttpRequest request;
+    private ChannelHandlerContext ctx;
+    private HttpRequest request;
 
-	public JPRequest(ChannelHandlerContext ctx, HttpRequest request) {
-		this.ctx = ctx;
-		this.request = request;
-	}
+    public JPRequest(ChannelHandlerContext ctx, HttpRequest request) {
+        this.ctx = ctx;
+        this.request = request;
+    }
 
-	public String getUri() {
-		return request.getUri();
-	}
+    public String getUri() {
+        return request.getUri();
+    }
 
-	public String getMethod() {
-		return request.getMethod().name();
-	}
+    public String getMethod() {
+        return request.getMethod().name();
+    }
 
-	public Map<String, List<String>> getParameters() {
-		QueryStringDecoder decoderQuery = new QueryStringDecoder(request.getUri());
-		return decoderQuery.parameters();
-	}
+    public Map<String, List<String>> getParameters() {
+        QueryStringDecoder decoderQuery = new QueryStringDecoder(request.getUri());
+        return decoderQuery.parameters();
+    }
 
-	/**
-	 * <pre>
-	 * @param name
-	 * @param decoderQuery
-	 * @return
-	 * </pre>
-	 */
-	public String getParameter(String name) {
-		Map<String, List<String>> params = getParameters();
-		List<String> param = params.get(name);
-		if (null != param) {
-			return param.get(0);
-		} else {
-			return null;
-		}
-	}
+    /**
+     * <pre>
+     * @param name
+     * @param decoderQuery
+     * @return
+     * </pre>
+     */
+    public String getParameter(String name) {
+        Map<String, List<String>> params = getParameters();
+        List<String> param = params.get(name);
+        if (null != param) {
+            return param.get(0);
+        } else {
+            return null;
+        }
+    }
 
 }

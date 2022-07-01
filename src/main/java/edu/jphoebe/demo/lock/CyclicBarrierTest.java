@@ -1,6 +1,7 @@
 package edu.jphoebe.demo.lock;
 
-import cn.auntec.framework.components.util.executor.ThreadPoolUtils;
+
+import cn.auntec.framework.components.util.executor.ThreadPoolUtil;
 
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
@@ -16,7 +17,7 @@ public class CyclicBarrierTest {
 
     public static void simple() {
         int thread = 10;
-        final ThreadPoolExecutor threadPoolExecutor = ThreadPoolUtils.newFixedThreadPool(thread);
+        final ThreadPoolExecutor threadPoolExecutor = ThreadPoolUtil.newFixedThreadPool(thread);
         CyclicBarrier cyclicBarrier = new CyclicBarrier(thread / 2, () -> {
             System.out.println("aaaa");
         });

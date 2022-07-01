@@ -1,6 +1,6 @@
 package edu.jphoebe.demo.lock;
 
-import cn.auntec.framework.components.util.executor.ThreadPoolUtils;
+import cn.auntec.framework.components.util.executor.ThreadPoolUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,20 +15,20 @@ public class CountDownLatchTest {
 
     public static void simple() {
         int thread = 10;
-        final ThreadPoolExecutor threadPoolExecutor = ThreadPoolUtils.newFixedThreadPool(thread);
+        final ThreadPoolExecutor threadPoolExecutor = ThreadPoolUtil.newFixedThreadPool(thread);
         CountDownLatch countDownLatch = new CountDownLatch(thread);
 
         for (int i = 0; i < thread; i++) {
             int finalI = i;
             threadPoolExecutor.execute(() -> {
                 System.out.println(finalI + "。。。。。。准备工作");
-                countDownLatch.countDown();
                 try {
                     TimeUnit.SECONDS.sleep(5);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 System.out.println(finalI + "完成工作");
+                countDownLatch.countDown();
             });
         }
         try {
@@ -41,7 +41,7 @@ public class CountDownLatchTest {
 
     public static void andFuture() {
         int thread = 10;
-        final ThreadPoolExecutor threadPoolExecutor = ThreadPoolUtils.newFixedThreadPool(thread);
+        final ThreadPoolExecutor threadPoolExecutor = ThreadPoolUtil.newFixedThreadPool(thread);
         CountDownLatch countDownLatch = new CountDownLatch(thread);
         List<Future<Boolean>> results = new ArrayList<>();
         for (int i = 0; i < thread; i++) {
@@ -88,7 +88,7 @@ public class CountDownLatchTest {
 
     @SuppressWarnings("unchecked")
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-
+        CountDownLatchTest.simple();
 
     }
 
