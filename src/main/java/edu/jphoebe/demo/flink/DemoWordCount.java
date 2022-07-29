@@ -18,10 +18,18 @@ import org.apache.flink.streaming.api.functions.windowing.ProcessWindowFunction;
 import org.apache.flink.streaming.api.windowing.assigners.EventTimeSessionWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
+import org.apache.flink.streaming.connectors.redis.RedisSink;
+import org.apache.flink.streaming.connectors.redis.common.config.FlinkJedisConfigBase;
+import org.apache.flink.streaming.connectors.redis.common.config.FlinkJedisPoolConfig;
+import org.apache.flink.streaming.connectors.redis.common.mapper.RedisCommand;
+import org.apache.flink.streaming.connectors.redis.common.mapper.RedisCommandDescription;
+import org.apache.flink.streaming.connectors.redis.common.mapper.RedisMapper;
 import org.apache.flink.streaming.runtime.operators.util.AssignerWithPeriodicWatermarksAdapter;
 import org.apache.flink.util.Collector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author 蒋时华
@@ -78,7 +86,7 @@ public class DemoWordCount {
         // 创建 execution environment
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setRestartStrategy(RestartStrategies.noRestart());//声明使用eventTime
-//        env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
+        env.enableCheckpointing(TimeUnit.SECONDS.toMillis(10));
 
         // 通过连接 socket 获取输入数据，这里连接到本地9000端口，如果9000端口已被占用，请换一个端口
         // nc -lk 9000
@@ -94,7 +102,7 @@ public class DemoWordCount {
         ));
 
         // 解析数据，按 word 分组，开窗，聚合
-        DataStream<Tuple4<String, Integer, Long, Long>> windowCounts = text
+        DataStream<Tuple4<String, Integer, Long, Long>> dataStream = text
                 // 获取数据中的event时间戳进行判断
                 .assignTimestampsAndWatermarks(new AssignerWithPeriodicWatermarksAdapter.Strategy<>(new BoundedOutOfOrdernessTimestampExtractor<String>(Time.seconds(0)) {
                     @Override
@@ -135,10 +143,9 @@ public class DemoWordCount {
                 .process(new ProcessWindowFunction<Tuple2<String, Integer>, Tuple4<String, Integer, Long, Long>, String, TimeWindow>() {
                     @Override
                     public void process(String s, ProcessWindowFunction<Tuple2<String, Integer>, Tuple4<String, Integer, Long, Long>, String, TimeWindow>.Context context, Iterable<Tuple2<String, Integer>> elements, Collector<Tuple4<String, Integer, Long, Long>> out) throws Exception {
-                        Tuple4 tp4 = new Tuple4();
+                        Tuple4<String, Integer, Long, Long> tp4 = new Tuple4<>();
                         int count = 0;
                         for (Tuple2<String, Integer> item : elements) {
-                            System.out.println(item.toString());
                             count++;
                             tp4.f0 = item.f0;
                             tp4.f1 = count;
@@ -149,7 +156,86 @@ public class DemoWordCount {
                     }
                 });
         // 将结果打印到控制台，注意这里使用的是单线程打印，而非多线程
-        windowCounts.print().setParallelism(1);
+//        dataStream.print().setParallelism(1);
+
+
+        // sink redis
+        FlinkJedisConfigBase conf = new FlinkJedisPoolConfig.Builder()
+                .setHost("10.10.20.105")
+                .setDatabase(15)
+                .build();
+        // bahir
+        dataStream
+                .addSink(new RedisSink<Tuple4<String, Integer, Long, Long>>(conf, new RedisMapper<Tuple4<String, Integer, Long, Long>>() {
+                    @Override
+                    public RedisCommandDescription getCommandDescription() {
+//                        return new RedisCommandDescription(RedisCommand.HSET, "HASH_NAME");
+                        return new RedisCommandDescription(RedisCommand.SET, "HASH_NAME");
+                    }
+
+                    @Override
+                    public String getKeyFromData(Tuple4<String, Integer, Long, Long> value) {
+                        return value.f0;
+                    }
+
+                    @Override
+                    public String getValueFromData(Tuple4<String, Integer, Long, Long> value) {
+                        return value.toString();
+                    }
+                })).setParallelism(4);
+
+        // sink filesystem
+//        String path = "/Users/jphoebe/Downloads/flink/";
+//        dataStream
+////                .rescale()
+//                .addSink(StreamingFileSink.forRowFormat(new Path(path), new SimpleStringEncoder<Tuple4<String, Integer, Long, Long>>("UTF-8"))
+//                        /**
+//                         * 设置桶分配政策
+//                         * DateTimeBucketAssigner --默认的桶分配政策，默认基于时间的分配器，每小时产生一个桶，格式如下yyyy-MM-dd--HH
+//                         * BasePathBucketAssigner ：将所有部分文件（part file）存储在基本路径中的分配器（单个全局桶）
+//                         */
+//                        .withBucketAssigner(new DateTimeBucketAssigner<>())
+//                        /**
+//                         * 有三种滚动政策
+//                         *  CheckpointRollingPolicy
+//                         *  DefaultRollingPolicy
+//                         *  OnCheckpointRollingPolicy
+//                         */
+//                        .withRollingPolicy(
+//                                /**
+//                                 * 滚动策略决定了写出文件的状态变化过程
+//                                 * 1. In-progress ：当前文件正在写入中
+//                                 * 2. Pending ：当处于 In-progress 状态的文件关闭（closed）了，就变为 Pending 状态
+//                                 * 3. Finished ：在成功的 Checkpoint 后，Pending 状态将变为 Finished 状态
+//                                 *
+//                                 * 观察到的现象
+//                                 * 1.会根据本地时间和时区，先创建桶目录
+//                                 * 2.文件名称规则：part-<subtaskIndex>-<partFileIndex>
+//                                 * 3.在macos中默认不显示隐藏文件，需要显示隐藏文件才能看到处于In-progress和Pending状态的文件，因为文件是按照.开头命名的
+//                                 *
+//                                 */
+//                                DefaultRollingPolicy.builder()
+//                                        //每隔多久（指定）时间生成一个新文件
+//                                        .withRolloverInterval(TimeUnit.SECONDS.toMillis(1))
+//                                        //数据不活动时间 每隔多久（指定）未来活动数据，则将上一段时间（无数据时间段）也生成一个文件
+//                                        .withInactivityInterval(TimeUnit.SECONDS.toMillis(1))
+//                                        //每个文件大小
+//                                        .withMaxPartSize(1024 * 1024 * 1024)
+//                                        .build())
+//                        // 桶检查间隔，这里设置为1s
+//                        .withBucketCheckInterval(10L)
+//                        /**
+//                         * 设置sink的前缀和后缀
+//                         * 文件的头和文件扩展名
+//                         */
+//                        .withOutputFileConfig(OutputFileConfig
+//                                .builder()
+//                                .withPartPrefix("wordCount")
+//                                .withPartSuffix(".txt")
+//                                .build())
+//                        .build())
+//                .setParallelism(1);
+
 
         env.execute();
     }

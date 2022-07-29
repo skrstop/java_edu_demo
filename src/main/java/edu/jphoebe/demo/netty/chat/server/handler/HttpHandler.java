@@ -2,14 +2,12 @@ package edu.jphoebe.demo.netty.chat.server.handler;
 
 import io.netty.channel.*;
 import io.netty.handler.codec.http.*;
-import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.net.URL;
 
 public class HttpHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
-    private static Logger LOG = Logger.getLogger(HttpHandler.class);
 
     //获取class路径
     private URL baseURL = HttpHandler.class.getProtectionDomain().getCodeSource().getLocation();
@@ -70,7 +68,7 @@ public class HttpHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
             throws Exception {
         Channel client = ctx.channel();
-        LOG.info("Client:" + client.remoteAddress() + "异常");
+        System.out.println("Client:" + client.remoteAddress() + "异常");
         // 当出现异常就关闭连接
         cause.printStackTrace();
         ctx.close();

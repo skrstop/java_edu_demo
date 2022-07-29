@@ -14,13 +14,11 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
-import org.apache.log4j.Logger;
 
 import java.io.IOException;
 
 public class ChatServer {
 
-    private static Logger LOG = Logger.getLogger(ChatServer.class);
 
     private int port = 80;
 
@@ -30,7 +28,9 @@ public class ChatServer {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
             ServerBootstrap b = new ServerBootstrap();
-            b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).option(ChannelOption.SO_BACKLOG, 1024)
+            b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)
+                    .option(ChannelOption.SO_BACKLOG, 1024)
+                    .option(ChannelOption.SO_KEEPALIVE, true)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         public void initChannel(SocketChannel ch) throws Exception {
@@ -57,7 +57,7 @@ public class ChatServer {
                         }
                     });
             ChannelFuture f = b.bind(this.port).sync();
-            LOG.info("服务已启动,监听端口" + this.port);
+            System.out.println("服务已启动,监听端口" + this.port);
             f.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             e.printStackTrace();
