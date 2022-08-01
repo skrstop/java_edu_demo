@@ -21,7 +21,8 @@ public class CustomMessage implements Serializable {
     public static String TYPE_LOGOUT = "logout";
     public static String TYPE_CHAT = "chat";
 
-    private String key;
+    @Builder.Default
+    private String key = "default";
 
     private String type;
 

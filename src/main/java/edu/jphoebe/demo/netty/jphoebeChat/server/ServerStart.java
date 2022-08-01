@@ -1,20 +1,37 @@
 package edu.jphoebe.demo.netty.jphoebeChat.server;
 
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import edu.jphoebe.demo.netty.jphoebeChat.common.CustomMessage;
 import edu.jphoebe.demo.netty.jphoebeChat.common.seri.json.JsonDecoder;
 import edu.jphoebe.demo.netty.jphoebeChat.common.seri.json.JsonEncoder;
 import edu.jphoebe.demo.netty.jphoebeChat.common.seri.text.TextDecoder;
 import edu.jphoebe.demo.netty.jphoebeChat.common.seri.text.TextEncoder;
+import edu.jphoebe.demo.netty.jphoebeChat.handle.DelimiterBasedFrameEncoder;
 import edu.jphoebe.demo.netty.jphoebeChat.handle.ServerSocketMessageHandler;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.DelimiterBasedFrameDecoder;
+import io.netty.handler.codec.base64.Base64Decoder;
+import io.netty.handler.codec.base64.Base64Encoder;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author 蒋时华
  * @date 2022-07-29 16:51:31
  */
 public class ServerStart {
+
+    public static ConcurrentMap<String, ChannelHandlerContext> onlineUserMap = new ConcurrentHashMap<>();
+    public static ConcurrentMap<ChannelHandlerContext, String> onlineUserMap2 = new ConcurrentHashMap<>();
 
     public static void main(String[] args) throws InterruptedException {
 
@@ -30,6 +47,8 @@ public class ServerStart {
                         @Override
                         protected void initChannel(Channel ch) throws Exception {
                             ChannelPipeline p = ch.pipeline();
+                            ByteBuf byteBuf = Unpooled.wrappedBuffer("&&&&".getBytes(StandardCharsets.UTF_8));
+
 
                             /*** 心跳 */
                             /*
@@ -41,10 +60,22 @@ public class ServerStart {
 //                            p.addLast(new IdleStateHandler(3,5,7, TimeUnit.SECONDS));
 //                            p.addLast(new HeartBeatServerHandler());
 
+                            // 粘包和拆包
+                            p.addLast(new DelimiterBasedFrameDecoder(5 * 1024
+                                    , true
+                                    , false
+                                    , byteBuf));
+                            // decode base64
+                            p.addLast(new Base64Decoder());
                             // decode json
                             p.addLast(new JsonDecoder());
                             // decode text
                             p.addLast(new TextDecoder());
+
+                            // 粘包和拆包
+                            p.addLast(new DelimiterBasedFrameEncoder(byteBuf));
+                            // encode base64
+                            p.addLast(new Base64Encoder());
                             // encode text
                             p.addLast(new TextEncoder());
                             // encode json
@@ -61,6 +92,37 @@ public class ServerStart {
                     .bind(18181)
                     .sync();
             System.out.println("服务已启动,监听端口: " + 18181);
+
+            new Thread(() -> {
+                System.out.println("开启服务端对话功能");
+                System.out.println("你好，请在控制台输入消息内容");
+                Scanner scanner = new Scanner(System.in);
+                do {
+                    if (scanner.hasNext()) {
+                        String input = scanner.nextLine();
+                        if ("users".equals(input)) {
+                            System.out.println("当前在线用户：" + onlineUserMap.size());
+                            continue;
+                        }
+                        String[] split = input.split(":");
+                        String key = "default";
+                        if (split.length >= 2) {
+                            key = split[0];
+                        }
+                        input = StrUtil.removePrefix(input, key + ":");
+                        ChannelHandlerContext channelHandlerContext = ServerStart.onlineUserMap.get(key);
+                        if (ObjectUtil.isNotNull(channelHandlerContext)) {
+                            channelHandlerContext.channel().writeAndFlush(CustomMessage.builder()
+                                    .content(input)
+                                    .build());
+                        } else {
+                            System.out.println("没有找到用户" + key);
+                        }
+                    }
+                }
+                while (true);
+            }).start();
+
             channelFuture.channel()
                     .closeFuture()
                     .sync();

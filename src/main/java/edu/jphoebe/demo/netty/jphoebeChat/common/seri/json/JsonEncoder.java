@@ -23,13 +23,14 @@ public class JsonEncoder extends MessageToMessageEncoder<CustomMessage> {
             return;
         }
         Attribute<Object> protocol = ctx.channel().attr(AttributeKey.valueOf("protocol"));
-        if (protocol.get() == null || !protocol.get().equals("json")) {
-            out.add(msg);
-            return;
-        }
+//        if (protocol.get() == null || !protocol.get().equals("json")) {
+//            out.add(msg);
+//            return;
+//        }
         System.out.println("编码协议：json");
         String message = JSONUtil.toJsonStr(msg);
         System.out.println("发送消息：" + message);
         out.add(ByteBufUtil.encodeString(ctx.alloc(), CharBuffer.wrap(message), charset));
+//        out.add(message);
     }
 }

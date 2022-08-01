@@ -1,49 +1,43 @@
 package edu.jphoebe.demo.netty.jphoebeChat.handle;
 
+import edu.jphoebe.demo.netty.jphoebeChat.client.ClientStart;
 import edu.jphoebe.demo.netty.jphoebeChat.common.CustomMessage;
-import edu.jphoebe.demo.netty.jphoebeChat.server.ServerStart;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-
+import io.netty.util.AttributeKey;
 
 @ChannelHandler.Sharable
-public class ServerSocketMessageHandler extends SimpleChannelInboundHandler<CustomMessage> {
-
+public class ClientSocketMessageHandler extends SimpleChannelInboundHandler<CustomMessage> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, CustomMessage msg) throws Exception {
         System.out.println();
         System.out.println("收到消息：" + msg.getContent() + ", 发送人：" + msg.getKey());
-        if (!ServerStart.onlineUserMap.containsKey(msg.getKey())) {
-            ServerStart.onlineUserMap.put(msg.getKey(), ctx);
-            ServerStart.onlineUserMap2.put(ctx, msg.getKey());
-            System.out.println("新用户连接：" + msg.getKey());
-            System.out.println("当前在线人数：" + ServerStart.onlineUserMap.size());
-        }
+
+        ctx.channel().attr(AttributeKey.valueOf("key")).set(msg.getKey());
     }
 
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("服务端Handler创建...");
+        System.out.println("客户端Handler创建...");
         super.handlerAdded(ctx);
     }
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception { // (3)
+        Channel client = ctx.channel();
         System.out.println("Socket Client 离开");
-        String key = ServerStart.onlineUserMap2.get(ctx);
-        ServerStart.onlineUserMap2.remove(ctx);
-        if (key != null) {
-            ServerStart.onlineUserMap.remove(key);
-        }
-        System.out.println("当前在线人数：" + ServerStart.onlineUserMap.size());
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         System.out.println("channelInactive");
         super.channelInactive(ctx);
+        if (!ClientStart.exit) {
+            ClientStart.consoleInput.setCtx(null);
+        }
     }
 
     /**
@@ -52,6 +46,16 @@ public class ServerSocketMessageHandler extends SimpleChannelInboundHandler<Cust
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         System.out.println("Socket Client: 有客户端连接：" + ctx.channel().toString());
+        System.out.println("开启客户端对话功能");
+        ClientStart.consoleInput.setCtx(ctx);
+    }
+
+    @Override
+    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+        super.channelUnregistered(ctx);
+        if (!ClientStart.exit) {
+            ClientStart.consoleInput.setCtx(null);
+        }
     }
 
     /**
