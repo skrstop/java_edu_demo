@@ -14,12 +14,16 @@ public class ServerSocketMessageHandler extends SimpleChannelInboundHandler<Cust
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, CustomMessage msg) throws Exception {
         System.out.println();
-        System.out.println("收到消息：" + msg.getContent() + ", 发送人：" + msg.getKey());
-        if (!ServerStart.onlineUserMap.containsKey(msg.getKey())) {
+        if ("login".equals(msg.getType())
+                && !ServerStart.onlineUserMap.containsKey(msg.getKey())) {
             ServerStart.onlineUserMap.put(msg.getKey(), ctx);
             ServerStart.onlineUserMap2.put(ctx, msg.getKey());
-            System.out.println("新用户连接：" + msg.getKey());
+            System.out.println("新用户登录：" + msg.getKey());
             System.out.println("当前在线人数：" + ServerStart.onlineUserMap.size());
+        } else if (ServerStart.onlineUserMap.containsKey(msg.getKey())) {
+            System.out.println("收到消息：" + msg.getContent() + ", 发送人：" + msg.getKey());
+        } else {
+            System.out.println("未知消息：" + msg.getContent() + ", 未知发送人：" + msg.getKey());
         }
     }
 
@@ -36,6 +40,7 @@ public class ServerSocketMessageHandler extends SimpleChannelInboundHandler<Cust
         ServerStart.onlineUserMap2.remove(ctx);
         if (key != null) {
             ServerStart.onlineUserMap.remove(key);
+            System.out.println("用户离开：" + key);
         }
         System.out.println("当前在线人数：" + ServerStart.onlineUserMap.size());
     }

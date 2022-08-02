@@ -98,26 +98,29 @@ public class ServerStart {
                 System.out.println("你好，请在控制台输入消息内容");
                 Scanner scanner = new Scanner(System.in);
                 do {
-                    if (scanner.hasNext()) {
-                        String input = scanner.nextLine();
-                        if ("users".equals(input)) {
-                            System.out.println("当前在线用户：" + onlineUserMap.size());
-                            continue;
-                        }
-                        String[] split = input.split(":");
-                        String key = "default";
-                        if (split.length >= 2) {
-                            key = split[0];
-                        }
-                        input = StrUtil.removePrefix(input, key + ":");
-                        ChannelHandlerContext channelHandlerContext = ServerStart.onlineUserMap.get(key);
-                        if (ObjectUtil.isNotNull(channelHandlerContext)) {
-                            channelHandlerContext.channel().writeAndFlush(CustomMessage.builder()
-                                    .content(input)
-                                    .build());
-                        } else {
-                            System.out.println("没有找到用户" + key);
-                        }
+                    if (!scanner.hasNext()) {
+                        continue;
+                    }
+                    String input = scanner.nextLine();
+                    if ("users".equals(input)) {
+                        System.out.println("当前在线用户：" + onlineUserMap.size());
+                        continue;
+                    }
+                    String[] split = input.split(":");
+                    String key = "default";
+                    if (split.length >= 2) {
+                        key = split[0];
+                    }
+                    input = StrUtil.removePrefix(input, key + ":");
+                    ChannelHandlerContext channelHandlerContext = ServerStart.onlineUserMap.get(key);
+                    if (ObjectUtil.isNotNull(channelHandlerContext)) {
+                        channelHandlerContext.channel().writeAndFlush(CustomMessage.builder()
+                                .key("server")
+                                .content(input)
+                                .type("chat")
+                                .build());
+                    } else {
+                        System.out.println("没有找到用户: " + key);
                     }
                 }
                 while (true);

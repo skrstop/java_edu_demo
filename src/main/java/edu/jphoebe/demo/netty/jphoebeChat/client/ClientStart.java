@@ -125,30 +125,42 @@ public class ClientStart {
             System.out.println("你好，请在控制台输入消息内容");
             Scanner scanner = new Scanner(System.in);
             do {
-                if (scanner.hasNext()) {
-                    String input = scanner.nextLine();
-                    if ("exit".equals(input)) {
-                        System.out.println("退出");
-                        exit = true;
-                        ctx.get().channel().close();
-                        continue;
-                    } else if ("reconnect".equals(input) && b != null) {
-                        exit = false;
-                        if (this.ctx.get().channel().isActive()) {
-                            System.out.println("当前连接正常，不需要重连");
-                            continue;
-                        }
-                        EventLoop eventLoop = this.ctx.get().channel().eventLoop();
-                        eventLoop.schedule(() -> b.connect().addListener(new ClientReconnectHandler(b)), 3, TimeUnit.SECONDS);
+                if (!scanner.hasNext()) {
+                    continue;
+                }
+                String clientKey = "client1";
+                String input = scanner.nextLine();
+                if ("login".equals(input)) {
+                    System.out.println("登录");
+                    exit = true;
+                    ctx.get().channel().writeAndFlush(CustomMessage.builder()
+                            .key(clientKey)
+                            .type("login")
+                            .build());
+                    continue;
+                } else if ("exit".equals(input)) {
+                    System.out.println("退出");
+                    exit = true;
+                    ctx.get().channel().close();
+                    continue;
+                } else if ("reconnect".equals(input) && b != null) {
+                    exit = false;
+                    if (this.ctx.get().channel().isActive()) {
+                        System.out.println("当前连接正常，不需要重连");
                         continue;
                     }
-                    if (ctx != null
-                            && ctx.get() != null
-                            && ctx.get().channel().isActive()) {
-                        ctx.get().channel().writeAndFlush(CustomMessage.builder()
-                                .content(input)
-                                .build());
-                    }
+                    EventLoop eventLoop = this.ctx.get().channel().eventLoop();
+                    eventLoop.schedule(() -> b.connect().addListener(new ClientReconnectHandler(b)), 3, TimeUnit.SECONDS);
+                    continue;
+                }
+                if (ctx != null
+                        && ctx.get() != null
+                        && ctx.get().channel().isActive()) {
+                    ctx.get().channel().writeAndFlush(CustomMessage.builder()
+                            .key(clientKey)
+                            .type("chat")
+                            .content(input)
+                            .build());
                 }
             }
             while (true);

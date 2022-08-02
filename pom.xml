@@ -105,6 +105,10 @@
             <groupId>cn.auntec.framework</groupId>
             <artifactId>components-util-serialization</artifactId>
         </dependency>
+        <dependency>
+            <groupId>cn.auntec.framework</groupId>
+            <artifactId>components-util-system</artifactId>
+        </dependency>
 
         <!-- flink -->
         <dependency>
@@ -173,6 +177,15 @@
     </dependencies>
 
     <build>
+        <!--        <resources>-->
+        <!--            <resource>-->
+        <!--                <directory>src/main/resources</directory>-->
+        <!--                <filtering>true</filtering>-->
+        <!--                <excludes>-->
+        <!--                    <exclude>/libs/**</exclude>-->
+        <!--                </excludes>-->
+        <!--            </resource>-->
+        <!--        </resources>-->
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
