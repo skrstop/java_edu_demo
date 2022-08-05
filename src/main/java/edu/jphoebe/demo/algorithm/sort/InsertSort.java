@@ -1,4 +1,4 @@
-package edu.jphoebe.demo.algorithm.sort.insertSort;
+package edu.jphoebe.demo.algorithm.sort;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.json.JSONUtil;
