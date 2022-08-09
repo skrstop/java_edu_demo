@@ -4,6 +4,7 @@ import cn.hutool.core.thread.ThreadUtil;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.LongAdder;
 
 /**
  * @author 蒋时华
@@ -73,7 +74,7 @@ public class Test {
 
         });
 
-//        countDownLatch.await();
+        countDownLatch.await();
         while (true) {
             System.out.println("主线程执行-----");
             TimeUnit.SECONDS.sleep(1);

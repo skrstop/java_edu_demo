@@ -20,6 +20,7 @@ public class BubbleSort {
 
         System.out.println("排序前：" + JSONUtil.toJsonStr(array));
 
+        boolean swap = false;
         for (int i = 0; i < size; i++) {
             for (int i1 = size - 1; i1 > i; i1--) {
                 if (array[i1] >= array[i1 - 1]) {
@@ -28,6 +29,10 @@ public class BubbleSort {
                 int tmp = array[i1];
                 array[i1] = array[i1 - 1];
                 array[i1 - 1] = tmp;
+                swap = true;
+            }
+            if (!swap) {
+                break;
             }
         }
 

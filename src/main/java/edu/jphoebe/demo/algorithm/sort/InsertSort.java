@@ -20,6 +20,7 @@ public class InsertSort {
 
         System.out.println("排序前：" + JSONUtil.toJsonStr(array));
 
+        boolean swap = false;
         for (int i = 1; i < size; i++) {
 
             int temp = array[i];
