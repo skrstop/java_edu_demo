@@ -39,13 +39,6 @@ public class RadixSort {
     public static Integer[] countSort(Integer[] array, int div) {
         int[] bucket = new int[10];
 
-        // 找到最小值
-        int min = array[0];
-        for (int i = 1; i < array.length; i++) {
-            if (array[i] < min) {
-                min = array[i];
-            }
-        }
         // 确定数量
         for (int i = 0; i < array.length; i++) {
             int val = array[i] / div % 10;

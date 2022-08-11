@@ -3,7 +3,6 @@ package edu.jphoebe.demo.algorithm.sort;
 import cn.hutool.json.JSONUtil;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author 蒋时华
@@ -19,92 +18,52 @@ public class BucketSort {
 //        for (int i = 0; i < size; i++) {
 //            array[i] = RandomUtil.randomInt(0, 1000);
 //        }
-        Integer[] array = {63, 486, 306, 649, 773, 680, 279, 431, 353, 827, 788, 130, 46, 304, 607, 983, 34, 815, 39, 637};
+        Integer[] nums = {5, 2, 3, 1};
+        size = nums.length;
 
-        System.out.println("排序前：" + JSONUtil.toJsonStr(array));
+        System.out.println("排序前：" + JSONUtil.toJsonStr(nums));
 
         // 获取最大值和最小值
-        int min = array[0], max = array[0];
-        for (int i = 1; i < size; i++) {
-            if (array[i] > max) {
-                max = array[i];
-            } else if (array[i] < min) {
-                min = array[i];
+        int max = nums[0], min = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            if (max < nums[i]) {
+                max = nums[i];
+            }
+            if (min > nums[i]) {
+                min = nums[i];
             }
         }
-        // 桶个数
-        int bucketNum = (max - min) / size + 1;
-        // 初始化桶
-        List<List<Integer>> bucketValue = new ArrayList<>();
-        for (int i = 0; i < bucketNum; i++) {
-            bucketValue.add(new ArrayList<>());
+        int bucketCount = (max - min) / nums.length + 1;
+        ArrayList<ArrayList<Integer>> bucket = new ArrayList<>();
+        for (int i = 0; i < bucketCount; i++) {
+            bucket.add(new ArrayList<>());
         }
-        // 将数据放在桶中
-        for (int i = 0; i < size; i++) {
-            // 定位桶的位置
-            int bucketIndex = (array[i] - min) / size;
-            bucketValue.get(bucketIndex).add(array[i]);
+        for (int i = 0; i < nums.length; i++) {
+            int index = (nums[i] - min) / nums.length;
+            bucket.get(index).add(nums[i]);
         }
-        // 对每个桶的数据进行排序
-        for (List<Integer> values : bucketValue) {
-            if (values.isEmpty()) {
-                continue;
+        for (int i = 0; i < bucketCount; i++) {
+            ArrayList<Integer> values = bucket.get(i);
+            for (int j = values.size() / 2; j > 0; j /= 2) {
+                for (int l = j; l < values.size(); l++) {
+                    int tmp = values.get(l), k;
+                    for (k = l; (k - j) >= 0 && values.get(k - j) > tmp; k -= j) {
+                        values.set(k, values.get(k - j));
+                    }
+                    if (k != l) {
+                        values.set(k, tmp);
+                    }
+                }
             }
-            // 使用归并排序，保证稳定性
-            mergeSort(values, 0, values.size() - 1);
         }
-        // 将数据回写到数组中
         int index = 0;
-        for (List<Integer> values : bucketValue) {
+        for (ArrayList<Integer> values : bucket) {
             for (Integer value : values) {
-                array[index] = value;
-                index++;
+                nums[index++] = value;
             }
         }
 
-        System.out.println("排序后：" + JSONUtil.toJsonStr(array));
-    }
-
-    private static void mergeSort(List<Integer> values, int start, int end) {
-        if (start >= end) {
-            return;
-        }
-        int middle = (end - start) / 2;
-        mergeSort(values, start, middle);
-        mergeSort(values, middle + 1, end);
-        merge(values, start, end, middle);
-    }
-
-    private static void merge(List<Integer> values, int start, int end, int middle) {
-        List<Integer> tmp = new ArrayList<>(end - start + 1);
-        int l = start, r = middle + 1, tmpIndex = 0;
-        while (l <= middle && r <= end) {
-            if (values.get(l) <= values.get(r)) {
-                tmp.add(values.get(l));
-                l++;
-                tmpIndex++;
-            } else if (values.get(l) >= values.get(r)) {
-                tmp.add(values.get(r));
-                r++;
-                tmpIndex++;
-            }
-        }
-        while (l <= middle) {
-            tmp.add(values.get(l));
-            l++;
-            tmpIndex++;
-        }
-        while (r <= end) {
-            tmp.add(values.get(r));
-            r++;
-            tmpIndex++;
-        }
-        tmpIndex = 0;
-        while (start <= end) {
-            values.set(start, tmp.get(tmpIndex));
-            start++;
-            tmpIndex++;
-        }
+        System.out.println("排序后：" + JSONUtil.toJsonStr(nums));
     }
 
 
