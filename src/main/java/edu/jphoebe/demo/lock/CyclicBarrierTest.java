@@ -27,12 +27,12 @@ public class CyclicBarrierTest {
             threadPoolExecutor.execute(() -> {
                 System.out.println(finalI + "。。。。。。准备工作");
                 try {
-                    cyclicBarrier.await();
                     TimeUnit.SECONDS.sleep(5);
+                    System.out.println(finalI + "完成工作");
+                    cyclicBarrier.await();
                 } catch (InterruptedException | BrokenBarrierException e) {
                     e.printStackTrace();
                 }
-                System.out.println(finalI + "完成工作");
             });
         }
         System.out.println("全部准备完毕，开始工作: ");

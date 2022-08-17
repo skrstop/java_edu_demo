@@ -38,7 +38,7 @@ public class SemaphoreTest {
                 semaphore.release();
             });
         }
-
+        System.out.println("aaaa");
     }
 
     public static void main(String[] args) {
