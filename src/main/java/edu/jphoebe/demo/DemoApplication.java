@@ -1,12 +1,14 @@
 package edu.jphoebe.demo;
 
+import cn.auntec.framework.components.util.value.data.DateUtil;
+import cn.hutool.json.JSONUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 
 @SpringBootApplication
 @RestController
@@ -31,8 +33,10 @@ public class DemoApplication {
 //    }
 
     @PostMapping("/test")
-    public String test(@RequestBody Hashtable map) {
-        return "aaaaaaaaa";
+    public String test(@RequestBody HashMap<String, String> map) {
+        String result = DateUtil.now("yyyy-MM-dd HH:mm:ss") + "  ：  " + JSONUtil.toJsonStr(map);
+        System.out.println(result);
+        return result;
     }
 
 }

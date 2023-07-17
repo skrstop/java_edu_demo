@@ -15,8 +15,10 @@ public class KafkaConsumer {
 
     //kafka的监听器，topic为"zhTest"，消费者组为"zhTestGroup"
 //    @KafkaListener(topics = "zhTest", groupId = "zhTestGroup")
+
     @KafkaListener(groupId = "zhTestGroup"
-            , topicPartitions = {@TopicPartition(topic = "zhTest", partitions = {"0", "1"})})
+            , topicPartitions = {@TopicPartition(topic = "zhTest", partitions = {"0", "1"})}
+            , autoStartup = "#{${kafka.consume.enable}}")
     public void listenZhugeGroup(ConsumerRecord<String, String> record, Acknowledgment ack) {
         String value = record.value();
         System.out.println(record.offset() + "  ||  " + value);

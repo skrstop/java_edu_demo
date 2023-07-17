@@ -1,3 +1,10 @@
+server:
+  port: 18080
+
+kafka:
+  consume:
+    enable: true
+
 spring:
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
