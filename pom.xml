@@ -4,9 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>cn.auntec.framework</groupId>
-        <artifactId>components-project-dependencies</artifactId>
-        <version>1.2.3.20220414-RELEASE</version>
+        <groupId>com.skrstop.framework</groupId>
+        <artifactId>components-project</artifactId>
+        <version>1.2.1.20231221-RELEASE</version>
     </parent>
 
     <groupId>org.jphoebe.edu</groupId>
@@ -17,7 +17,6 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <javacv.version>1.5.7</javacv.version>
     </properties>
 
     <dependencies>
@@ -30,6 +29,24 @@
                     <artifactId>spring-boot-starter-logging</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <!-- skrstop -->
+        <dependency>
+            <groupId>com.skrstop.framework</groupId>
+            <artifactId>components-util-executor</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.skrstop.framework</groupId>
+            <artifactId>components-util-value</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.skrstop.framework</groupId>
+            <artifactId>components-util-serialization</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.skrstop.framework</groupId>
+            <artifactId>components-util-system</artifactId>
         </dependency>
 
         <dependency>
@@ -72,10 +89,12 @@
         <dependency>
             <groupId>org.msgpack</groupId>
             <artifactId>msgpack-core</artifactId>
+            <version>0.9.6</version>
         </dependency>
         <dependency>
             <groupId>org.msgpack</groupId>
             <artifactId>msgpack</artifactId>
+            <version>0.6.12</version>
         </dependency>
 
         <dependency>
@@ -92,23 +111,6 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>transmittable-thread-local</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>cn.auntec.framework</groupId>
-            <artifactId>components-util-executor</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>cn.auntec.framework</groupId>
-            <artifactId>components-util-value</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>cn.auntec.framework</groupId>
-            <artifactId>components-util-serialization</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>cn.auntec.framework</groupId>
-            <artifactId>components-util-system</artifactId>
         </dependency>
 
         <!-- flink -->
@@ -221,22 +223,18 @@
         <dependency>
             <groupId>org.bytedeco</groupId>
             <artifactId>javacv-platform</artifactId>
-            <version>${javacv.version}</version>
         </dependency>
         <dependency>
             <groupId>org.bytedeco</groupId>
             <artifactId>javacv</artifactId>
-            <version>${javacv.version}</version>
         </dependency>
         <dependency>
             <groupId>org.bytedeco</groupId>
             <artifactId>javacpp-platform</artifactId>
-            <version>${javacv.version}</version>
         </dependency>
         <dependency>
             <groupId>org.bytedeco</groupId>
             <artifactId>systems-platform</artifactId>
-            <version>${javacv.version}</version>
         </dependency>
 
         <dependency>
