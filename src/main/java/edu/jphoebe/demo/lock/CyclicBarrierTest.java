@@ -1,7 +1,7 @@
 package edu.jphoebe.demo.lock;
 
 
-import cn.auntec.framework.components.util.executor.ThreadPoolUtil;
+import com.skrstop.framework.components.util.executor.ThreadPoolUtil;
 
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;

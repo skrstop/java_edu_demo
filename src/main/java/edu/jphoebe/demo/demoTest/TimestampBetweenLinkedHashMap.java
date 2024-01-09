@@ -1,11 +1,11 @@
 package edu.jphoebe.demo.demoTest;
 
-import cn.auntec.framework.components.core.common.serializable.SerializableBean;
-import cn.auntec.framework.components.util.constant.StringPoolConst;
-import cn.auntec.framework.components.util.value.data.CollectionUtil;
-import cn.auntec.framework.components.util.value.data.DateUtil;
-import cn.auntec.framework.components.util.value.data.ObjectUtil;
-import cn.auntec.framework.components.util.value.data.StrUtil;
+import com.skrstop.framework.components.core.common.serializable.SerializableBean;
+import com.skrstop.framework.components.util.constant.StringPoolConst;
+import com.skrstop.framework.components.util.value.data.CollectionUtil;
+import com.skrstop.framework.components.util.value.data.DateUtil;
+import com.skrstop.framework.components.util.value.data.ObjectUtil;
+import com.skrstop.framework.components.util.value.data.StrUtil;
 import lombok.*;
 import lombok.experimental.Accessors;
 

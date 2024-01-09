@@ -1,8 +1,5 @@
 package edu.jphoebe.demo.thread;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 /**
  * @author 蒋时华
  * @date 2023-07-18 10:55:10
@@ -11,7 +8,7 @@ public class VirtualThread {
 
     public static void main(String[] args) {
 
-        ExecutorService virtualThreadPerTaskExecutor = Executors.newVirtualThreadPerTaskExecutor();
+//        ExecutorService virtualThreadPerTaskExecutor = Executors.newVirtualThreadPerTaskExecutor();
 
         long l1 = System.currentTimeMillis();
         int platformThreadCount = 10000;

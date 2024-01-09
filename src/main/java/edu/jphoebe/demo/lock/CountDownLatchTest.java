@@ -1,6 +1,6 @@
 package edu.jphoebe.demo.lock;
 
-import cn.auntec.framework.components.util.executor.ThreadPoolUtil;
+import com.skrstop.framework.components.util.executor.ThreadPoolUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ public class CountDownLatchTest {
             threadPoolExecutor.execute(() -> {
                 System.out.println(finalI + "。。。。。。准备工作");
                 try {
-                    TimeUnit.SECONDS.sleep(5);
+                    TimeUnit.SECONDS.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

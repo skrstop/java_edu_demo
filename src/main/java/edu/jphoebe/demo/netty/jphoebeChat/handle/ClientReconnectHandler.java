@@ -1,6 +1,6 @@
 package edu.jphoebe.demo.netty.jphoebeChat.handle;
 
-import cn.auntec.framework.components.util.value.format.TextFormatUtil;
+import com.skrstop.framework.components.util.value.format.TextFormatUtil;
 import edu.jphoebe.demo.netty.jphoebeChat.client.ClientStart;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;

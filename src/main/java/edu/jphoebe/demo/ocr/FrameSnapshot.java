@@ -3,7 +3,7 @@ package edu.jphoebe.demo.ocr;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
-import edu.jphoebe.demo.ocr.util.FFmpegProcessUtil;
+import com.skrstop.framework.components.util.system.process.ProcessUtil;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
@@ -36,7 +36,7 @@ public class FrameSnapshot {
         command.add("-f");
         command.add("flv");
         command.add(rtmp);
-        FFmpegProcessUtil.execute(command, null, null, timeout);
+        ProcessUtil.execute(command, null, null, timeout);
     }
 
     public static void getFrame(String url, String savePath) throws Exception {
@@ -99,7 +99,7 @@ public class FrameSnapshot {
     }
 
     public static void main(String[] args) throws Exception {
-        FFmpegProcessUtil.setLogConsole();
+        ProcessUtil.setLogConsole();
         List<File> files = FileUtil.loopFiles("/Users/jphoebe/Downloads/体彩--视频/排列3、排列5/", new FileFilter() {
             @Override
             public boolean accept(File pathname) {

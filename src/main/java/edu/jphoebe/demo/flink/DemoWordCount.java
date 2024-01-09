@@ -1,7 +1,7 @@
 package edu.jphoebe.demo.flink;
 
-import cn.auntec.framework.components.util.value.data.CollectionUtil;
-import cn.auntec.framework.components.util.value.data.NumberUtil;
+import com.skrstop.framework.components.util.value.data.CollectionUtil;
+import com.skrstop.framework.components.util.value.data.NumberUtil;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.restartstrategy.RestartStrategies;
