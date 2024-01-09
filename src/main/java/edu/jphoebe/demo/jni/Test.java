@@ -4,7 +4,6 @@ import cn.hutool.core.thread.ThreadUtil;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.LongAdder;
 
 /**
  * @author 蒋时华
@@ -17,9 +16,8 @@ public class Test {
         // 平台类库目录下
 //        System.loadLibrary("JniDemoImpl");
         // 自定义
-//        System.load("/Users/jphoebe/IdeaProjects/edu/java_edu_demo/src/main/java/edu/jphoebe/demo/jni/cSource/demo/JniDemoImpl.jnilib");
-//        System.load("/Users/jphoebe/IdeaProjects/edu/java_edu_demo/src/main/java/edu/jphoebe/demo/jni/cSource/exception/JniExceptionImpl.jnilib");
-        System.load("/Users/jphoebe/IdeaProjects/edu/java_edu_demo/src/main/java/edu/jphoebe/demo/jni/cSource/exception/JniExceptionImpl.jnilib");
+//        System.load("/Users/jphoebe/opt/code/IdeaProjects/edu/java_edu_demo/src/main/java/edu/jphoebe/demo/jni/cSource/demo/JniDemoImpl_x86.jnilib");
+        System.load("/Users/jphoebe/opt/code/IdeaProjects/edu/java_edu_demo/src/main/java/edu/jphoebe/demo/jni/cSource/exception/JniExceptionImpl_arm.jnilib");
     }
 
     public static void main(String[] args) throws InterruptedException {
@@ -41,7 +39,7 @@ public class Test {
         // 异常处理
         JniExceptionDemo jniException = new JniExceptionDemo();
 
-        CountDownLatch countDownLatch = new CountDownLatch(3);
+        CountDownLatch countDownLatch = new CountDownLatch(1);
 
 //        ThreadUtil.execute(() -> {
 //            try {
@@ -71,7 +69,6 @@ public class Test {
                 System.out.println("出现异常");
                 e.printStackTrace();
             }
-
         });
 
         countDownLatch.await();

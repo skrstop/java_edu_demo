@@ -7,7 +7,7 @@ package edu.jphoebe.demo.jni;
  * -I /Library/Java/JavaVirtualMachines/adoptopenjdk-11.jdk/Contents/Home/include/ \
  * -I /Library/Java/JavaVirtualMachines/adoptopenjdk-11.jdk/Contents/Home/include/darwin/ \
  * -I /Users/jphoebe/IdeaProjects/edu/java_edu_demo/src/main/java/edu/jphoebe/demo/soWrapper/ \
- * JniDemoImpl.c -o JniDemoImpl.jnilib
+ * JniDemoImpl.c -o JniDemoImpl_x86.jnilib
  *
  * @author 蒋时华
  * @date 2022-08-02 14:36:11
