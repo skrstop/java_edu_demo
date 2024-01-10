@@ -49,27 +49,27 @@ public class Test {
 //                System.out.println("出现异常");
 //                e.printStackTrace();
 //            }
-//
 //        });
-//        ThreadUtil.execute(() -> {
-//            try {
-////                countDownLatch.countDown();
-//                System.out.println("空指针: " + jniException.exception2());
-//            } catch (Error | Exception e) {
-//                System.out.println("出现异常");
-//                e.printStackTrace();
-//            }
-//
-//        });
+
         ThreadUtil.execute(() -> {
             try {
 //                countDownLatch.countDown();
-                System.out.println("堆栈破坏：" + jniException.exception3());
+                System.out.println("空指针: " + jniException.exception2());
             } catch (Error | Exception e) {
                 System.out.println("出现异常");
                 e.printStackTrace();
             }
         });
+
+//        ThreadUtil.execute(() -> {
+//            try {
+////                countDownLatch.countDown();
+//                System.out.println("堆栈破坏：" + jniException.exception3());
+//            } catch (Error | Exception e) {
+//                System.out.println("出现异常");
+//                e.printStackTrace();
+//            }
+//        });
 
         countDownLatch.await();
         while (true) {
